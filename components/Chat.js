@@ -1,12 +1,19 @@
 import React from 'react';
 import { View, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 
 export default class Chat extends React.Component {
-
-  state = { messages: [] };
+  constructor(props) {
+    super(props);
+    this.state = { 
+      name: this.props.route.params.name, // Initialise state with name received as props from navigate method in Start screen
+      colour: this.props.route.params.colour, // Initialise state with colour received as props from navigate method in Start screen
+      messages: [] // Set initial messages state to empty array. Data then fetched within componentDidMount()
+    };
+  }
 
   componentDidMount() {
+    this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen
     this.setState({
       messages: [
         {
@@ -29,9 +36,9 @@ export default class Chat extends React.Component {
     });
   }
 
-  onSend(messages = []) {
+  onSend(newMessage = []) {
     this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
+      messages: GiftedChat.append(previousState.messages, newMessage),
     }))
   }
 
@@ -43,15 +50,11 @@ export default class Chat extends React.Component {
   
   render() {
 
-    const name = this.props.route.params.name; // Get the name from the props passed by the navigate method in Screen1
-    this.props.navigation.setOptions({ title: name }); // Setting the header text shown on the screen  
-    const colour = this.props.route.params.colour; // Taking colour selected by user to set the background screen colour
-
     return (
-      <View style={{flex: 1, backgroundColor: colour}}>
+      <View style={{flex: 1, backgroundColor: this.state.colour}}>
         <GiftedChat 
           messages={this.state.messages} 
-          onSend={messages => this.onSend(messages)}
+          onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
           user={{_id: 1}}/>  
         {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height'/> : null}
