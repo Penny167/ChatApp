@@ -18,7 +18,7 @@ export default class Chat extends React.Component {
       messages: [
         {
           _id: 1,
-          text: 'Hello developer',
+          text: `Hello ${this.state.name}!`,
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -28,9 +28,25 @@ export default class Chat extends React.Component {
         },
         {
           _id: 2,
-          text: 'This is a system message',
+          text: `${this.state.name} has entered the chat`,
           createdAt: new Date(),
           system: true,
+        },
+        {
+          _id: 3,
+          text: `in what order are messages rendered?`,
+          createdAt: new Date(),
+          system: true,
+        },
+        {
+          _id: 4,
+          text: 'Messages are rendered last first!!',
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: 'React Native',
+            avatar: 'https://placeimg.com/140/140/any',
+          }
         }
       ]
     });
@@ -44,7 +60,7 @@ export default class Chat extends React.Component {
 
   renderBubble(props) {
     return (
-      <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#000'} }}/>
+      <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#8aa59a'} }}/>
     )
   }
   
