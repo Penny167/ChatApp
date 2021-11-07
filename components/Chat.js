@@ -24,6 +24,7 @@ export default class Chat extends React.Component {
         appId: "1:615418284505:web:57eebbf12fc662eb1431c8"
       });
     }
+    this.messagesCollection = firebase.firestore().collection('messages');
   }
 
   componentDidMount() {
@@ -39,10 +40,21 @@ export default class Chat extends React.Component {
     });
   }
 
-  onSend(newMessage = []) {
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, newMessage),
-    }))
+  onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onMessagesCollectionUpdate when the new message is detected
+    this.addMessage(newMessage)
+  }
+
+  addMessage(newMessage) {
+    this.messagesCollection.add({ // Use add method to add new message to the messages collection
+      _id: newMessage._id,
+      text: newMessage.text,
+      createdAt: newMessage.createdAt,
+      user: {
+        _id: newMessage.user._id,
+        name: newMessage.user.name,
+        avatar: newMessage.user.avatar
+      }
+    });
   }
 
   renderBubble(props) {
