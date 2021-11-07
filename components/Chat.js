@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Platform, KeyboardAvoidingView } from 'react-native';
+import firebase from 'firebase';
+import firestore from 'firebase';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 
 export default class Chat extends React.Component {
@@ -10,6 +12,16 @@ export default class Chat extends React.Component {
       colour: this.props.route.params.colour, // Initialise state with colour received as props from navigate method in Start screen
       messages: [] // Set initial messages state to empty array. Data then fetched within componentDidMount()
     };
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyAUUEaqS1CoGE0hriIAGgC_i7MC5dQWDt0",
+        authDomain: "chatapp-fccd8.firebaseapp.com",
+        projectId: "chatapp-fccd8",
+        storageBucket: "chatapp-fccd8.appspot.com",
+        messagingSenderId: "615418284505",
+        appId: "1:615418284505:web:57eebbf12fc662eb1431c8"
+      });
+    }
   }
 
   componentDidMount() {
