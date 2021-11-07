@@ -10,10 +10,12 @@ export default class Chat extends React.Component {
     this.state = { 
       name: this.props.route.params.name, // Initialise state with name received as props from navigate method in Start screen
       colour: this.props.route.params.colour, // Initialise state with colour received as props from navigate method in Start screen
-      messages: [] // Set initial messages state to empty array. Data then fetched within componentDidMount()
+      messages: [], // Set initial messages state to empty array. Data then fetched within componentDidMount()
+      uid: 0,
+      loggedInText: 'Logging in...'
     };
     if (!firebase.apps.length) {
-      firebase.initializeApp({
+      firebase.initializeApp({ // Initialise the app by passing the config object provided by Firebase to the initialize app function
         apiKey: "AIzaSyAUUEaqS1CoGE0hriIAGgC_i7MC5dQWDt0",
         authDomain: "chatapp-fccd8.firebaseapp.com",
         projectId: "chatapp-fccd8",
@@ -26,41 +28,14 @@ export default class Chat extends React.Component {
 
   componentDidMount() {
     this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: `Hello ${this.state.name}!`,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-          },
-        },
-        {
-          _id: 2,
-          text: `${this.state.name} has entered the chat`,
-          createdAt: new Date(),
-          system: true,
-        },
-        {
-          _id: 3,
-          text: `in what order are messages rendered?`,
-          createdAt: new Date(),
-          system: true,
-        },
-        {
-          _id: 4,
-          text: 'Messages are rendered last first!!',
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-          }
-        }
-      ]
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        await firebase.auth().signInAnonymously();
+      };
+      this.setState({
+        uid: user.uid,
+        loggedInText: 'Welcome',
+      });
     });
   }
 
@@ -75,6 +50,10 @@ export default class Chat extends React.Component {
       <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#8aa59a'} }}/>
     )
   }
+
+  componentWillUnmount() {
+    this.authUnsubscribe();
+ }
   
   render() {
 
@@ -84,7 +63,7 @@ export default class Chat extends React.Component {
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
-          user={{_id: 1}}/>  
+          user={this.state.uid}/>  
         {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height'/> : null}
       </View>
       
