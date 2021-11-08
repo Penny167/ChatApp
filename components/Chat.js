@@ -38,9 +38,30 @@ export default class Chat extends React.Component {
         loggedInText: 'Welcome',
       });
     });
+    this.unsubscribeMessagesCollection = this.messagesCollection.onSnapshot(this.onCollectionUpdate);
   }
 
-  onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onMessagesCollectionUpdate when the new message is detected
+  onCollectionUpdate = (querySnapshot) => { // when the database is updated set the messages state with the current data from the snapshot
+    const messages = [];
+    querySnapshot.forEach((doc) => {
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar
+        }
+      });
+    });
+    this.setState({
+      messages: messages
+    });
+  };
+
+  onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onCollectionUpdate when the new message is detected
     this.addMessage(newMessage)
   }
 
@@ -65,6 +86,7 @@ export default class Chat extends React.Component {
 
   componentWillUnmount() {
     this.authUnsubscribe();
+    this.unsubscribeMessagesCollection();
  }
   
   render() {
