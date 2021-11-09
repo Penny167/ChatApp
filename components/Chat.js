@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Platform, KeyboardAvoidingView } from 'react-native';
-import firebase from 'firebase';
-import firestore from 'firebase';
+import { View, Text, Platform, KeyboardAvoidingView } from 'react-native';
+const firebase = require('firebase');
+require('firebase/firestore');
+require('firebase/auth');
 import { GiftedChat, Bubble } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 
 export default class Chat extends React.Component {
@@ -93,11 +94,12 @@ export default class Chat extends React.Component {
 
     return (
       <View style={{flex: 1, backgroundColor: this.state.colour}}>
+        <Text>{this.state.loggedInText}</Text>
         <GiftedChat 
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
-          user={this.state.uid}/>  
+          user={{ _id: this.state.uid }}/>  
         {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height'/> : null}
       </View>
       
