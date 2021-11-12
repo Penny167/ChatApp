@@ -13,6 +13,11 @@ export default class Chat extends React.Component {
       colour: this.props.route.params.colour, // Initialise state with colour received as props from navigate method in Start screen
       messages: [], // Set initial messages state to empty array. Data then fetched within componentDidMount()
       uid: 0,
+      user: {
+        _id: '',
+        name: '',
+        avatar: ''
+      },
       loggedInText: 'Logging in...'
     };
     if (!firebase.apps.length) {
@@ -36,10 +41,15 @@ export default class Chat extends React.Component {
       };
       this.setState({
         uid: user.uid,
+        user: {
+          _id: user.uid,
+          name: this.state.name,
+          avatar: 'https://placeimg.com/140/140/any'
+        },
         loggedInText: 'Welcome',
       });
+      this.unsubscribeMessagesCollection = this.messagesCollection.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
     });
-    this.unsubscribeMessagesCollection = this.messagesCollection.onSnapshot(this.onCollectionUpdate);
   }
 
   onCollectionUpdate = (querySnapshot) => { // when the database is updated set the messages state with the current data from the snapshot
@@ -49,7 +59,7 @@ export default class Chat extends React.Component {
       messages.push({
         _id: data._id,
         text: data.text,
-        createdAt: data.createdAt,
+        createdAt: data.createdAt.toDate(),
         user: {
           _id: data.user._id,
           name: data.user.name,
@@ -74,7 +84,7 @@ export default class Chat extends React.Component {
       user: {
         _id: newMessage.user._id,
         name: newMessage.user.name,
-  //      avatar: newMessage.user.avatar
+        avatar: newMessage.user.avatar
       }
     });
   }
@@ -99,7 +109,12 @@ export default class Chat extends React.Component {
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
-          user={{ _id: this.state.uid, name: this.state.name }}/>  
+          renderUsernameOnMessage={true}
+          user={{ 
+            _id: this.state.uid, 
+            name: this.state.name,
+            avatar: 'https://placeimg.com/140/140/any' 
+          }}/>  
         {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height'/> : null}
       </View>
       
