@@ -74,7 +74,7 @@ export default class Chat extends React.Component {
       user: {
         _id: newMessage.user._id,
         name: newMessage.user.name,
-        avatar: newMessage.user.avatar
+  //      avatar: newMessage.user.avatar
       }
     });
   }
@@ -99,7 +99,7 @@ export default class Chat extends React.Component {
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
-          user={{ _id: this.state.uid }}/>  
+          user={{ _id: this.state.uid, name: this.state.name }}/>  
         {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height'/> : null}
       </View>
       
