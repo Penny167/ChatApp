@@ -73,19 +73,17 @@ export default class Chat extends React.Component {
   };
 
   onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onCollectionUpdate when the new message is detected
+  //  console.log(newMessage);
     this.addMessage(newMessage)
   }
 
   addMessage(newMessage) {
+    const latestMessage = newMessage[0]; // A new message in Gifted Chat is an array containing a new message object. We therefore need to first extract the object from the array
     this.messagesCollection.add({ // Use add method to add new message to the messages collection
-      _id: newMessage._id,
-      text: newMessage.text,
-      createdAt: newMessage.createdAt,
-      user: {
-        _id: newMessage.user._id,
-        name: newMessage.user.name,
-        avatar: newMessage.user.avatar
-      }
+      _id: latestMessage._id,
+      text: latestMessage.text,
+      createdAt: latestMessage.createdAt,
+      user: latestMessage.user
     });
   }
 
