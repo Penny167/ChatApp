@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
 const firebase = require('firebase');
 require('firebase/firestore');
 require('firebase/auth');
@@ -31,6 +31,13 @@ export default class Chat extends React.Component {
       });
     }
     this.messagesCollection = firebase.firestore().collection('messages');
+    // To remove warning message in the console for Android re setting timer
+    LogBox.ignoreLogs([
+      'Setting a timer',
+      'Warning: ...',
+      'undefined',
+      'Animated.event now requires a second argument for options',
+    ]);
   }
 
   componentDidMount() {
