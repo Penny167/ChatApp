@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const firebase = require('firebase');
 require('firebase/firestore');
 require('firebase/auth');
