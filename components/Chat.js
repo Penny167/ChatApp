@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 const firebase = require('firebase');
 require('firebase/firestore');
 require('firebase/auth');
-import { GiftedChat, Bubble } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 
 export default class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      name: this.props.route.params.name, // Initialise state with name received as props from navigate method in Start screen
-      colour: this.props.route.params.colour, // Initialise state with colour received as props from navigate method in Start screen
+      name: this.props.route.params.name, // Initialize state with name received as props from navigate method in Start screen
+      colour: this.props.route.params.colour, // Initialize state with colour received as props from navigate method in Start screen
       messages: [], // Set initial messages state to empty array. Data then fetched within componentDidMount()
       uid: 0,
       user: {
@@ -19,7 +20,8 @@ export default class Chat extends React.Component {
         name: '',
         avatar: ''
       },
-      loggedInText: 'Logging in...'
+      loggedInText: 'Offline',
+      isConnected: false
     };
     if (!firebase.apps.length) {
       firebase.initializeApp({ // Initialise the app by passing the config object provided by Firebase to the initialize app function
@@ -32,8 +34,7 @@ export default class Chat extends React.Component {
       });
     }
     this.messagesCollection = firebase.firestore().collection('messages');
-    // To remove warning message in the console for Android re setting timer
-    LogBox.ignoreLogs([
+    LogBox.ignoreLogs([ // To remove warning message in the console for Android re setting timer
       'Setting a timer',
       'Warning: ...',
       'undefined',
@@ -43,20 +44,26 @@ export default class Chat extends React.Component {
 
   componentDidMount() {
     this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        await firebase.auth().signInAnonymously();
-      };
-      this.setState({
-        uid: user.uid,
-        user: {
-          _id: user.uid,
-          name: this.state.name,
-          avatar: 'https://placeimg.com/140/140/any'
-        },
-        loggedInText: 'Welcome',
-      });
-      this.unsubscribeMessagesCollection = this.messagesCollection.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
+    NetInfo.fetch().then(connection => {
+      if(connection.isConnected) {
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+          if (!user) { await firebase.auth().signInAnonymously() };
+          this.setState({
+            uid: user.uid,
+            user: {
+              _id: user.uid,
+              name: this.state.name,
+              avatar: 'https://placeimg.com/140/140/any'
+            },
+            loggedInText: 'Online',
+            isConnected: true
+          });
+          // Add a database listener that will retrieve a snapshot of the messages collection whenever a change is detected, and pass it to the onCollectionUpdate function
+          this.unsubscribeMessagesCollection = this.messagesCollection.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
+        });
+      } else {
+        this.getMessages();
+      }
     });
   }
 
@@ -80,6 +87,16 @@ export default class Chat extends React.Component {
     });
   };
 
+  async getMessages() {
+    let messages = '';
+    try {
+      messages = await AsyncStorage.getItem('messages') || [];
+      this.setState({ messages: JSON.parse(messages) });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onCollectionUpdate when the new message is detected
   //  console.log(newMessage);
     this.addMessage(newMessage)
@@ -95,10 +112,19 @@ export default class Chat extends React.Component {
     });
   }
 
-  renderBubble(props) {
+  renderBubble(props) { // Customizes the bubble styling
     return (
       <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#8aa59a'} }}/>
     )
+  }
+
+  renderInputToolbar(props) { // Input bar for messages only rendered if the user is online
+    if(this.state.isConnected == false) {
+    } else {
+      return (
+        <InputToolbar {...props}/>
+      )
+    }
   }
 
   componentWillUnmount() {
@@ -115,6 +141,7 @@ export default class Chat extends React.Component {
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
+          renderInputToolbar={this.renderInputToolbar}
           renderUsernameOnMessage={true}
           user={{ 
             _id: this.state.uid, 
