@@ -105,6 +105,14 @@ export default class Chat extends React.Component {
     }
   }
 
+  async deleteMessages () {
+    try {
+      await AsyncStorage.removeItem('messages');
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onCollectionUpdate when the new message is detected
   //  console.log(newMessage);
     this.addMessage(newMessage)
