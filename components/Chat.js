@@ -82,10 +82,18 @@ export default class Chat extends React.Component {
         }
       });
     });
-    this.setState({
-      messages: messages
+    this.setState({ messages: messages }, () => { // setState is asynchronous so use callback parameter to invoke saveMessages only once the messages state has been updated
+      this.saveMessages();
     });
-  };
+  }
+
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+    } catch (error) {
+    console.log(error.message);
+    }
+  }
 
   async getMessages() {
     let messages = '';
