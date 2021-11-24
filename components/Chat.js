@@ -21,7 +21,7 @@ export default class Chat extends React.Component {
         avatar: ''
       },
       loggedInText: 'Offline',
-      isConnected: false
+      isConnected: false,
     };
     if (!firebase.apps.length) {
       firebase.initializeApp({ // Initialise the app by passing the config object provided by Firebase to the initialize app function
@@ -46,6 +46,7 @@ export default class Chat extends React.Component {
     this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen
     NetInfo.fetch().then(connection => {
       if(connection.isConnected) {
+        this.setState({ isConnected: true, loggedInText: 'Online' });
         this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
           if (!user) { await firebase.auth().signInAnonymously() };
           this.setState({
@@ -54,14 +55,13 @@ export default class Chat extends React.Component {
               _id: user.uid,
               name: this.state.name,
               avatar: 'https://placeimg.com/140/140/any'
-            },
-            loggedInText: 'Online',
-            isConnected: true
+            }
           });
           // Add a database listener that will retrieve a snapshot of the messages collection whenever a change is detected, and pass it to the onCollectionUpdate function
           this.unsubscribeMessagesCollection = this.messagesCollection.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
         });
       } else {
+        this.setState({ isConnected: false });
         this.getMessages();
       }
     });
@@ -139,7 +139,7 @@ export default class Chat extends React.Component {
     } else {
       return (
         <InputToolbar {...props}/>
-      )
+      );
     }
   }
 
