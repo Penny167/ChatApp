@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
@@ -58,3 +59,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
+
+CustomActions.contextTypes = { //assigns the context object actionSheet and checks that this is a function
+  actionSheet: PropTypes.func,
+};
