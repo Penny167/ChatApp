@@ -6,6 +6,7 @@ const firebase = require('firebase');
 require('firebase/firestore');
 require('firebase/auth');
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
+import CustomActions from './CustomActions';
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -143,6 +144,10 @@ export default class Chat extends React.Component {
     }
   }
 
+  renderCustomActions = (props) => { // Returns action button to access communication features
+    return <CustomActions {...props} />;
+  };
+
   componentWillUnmount() {
     this.authUnsubscribe();
     this.unsubscribeMessagesCollection();
@@ -159,6 +164,7 @@ export default class Chat extends React.Component {
           renderBubble={this.renderBubble}
           renderInputToolbar={this.renderInputToolbar}
           renderUsernameOnMessage={true}
+          renderActions={this.renderCustomActions}
           user={{ 
             _id: this.state.uid, 
             name: this.state.name,
