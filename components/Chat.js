@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-const firebase = require('firebase');
-require('firebase/firestore');
-require('firebase/auth');
+import firebase from 'firebase';
+import firestore from 'firebase';
+//const firebase = require('firebase');
+//require('firebase/firestore');
+//require('firebase/auth');
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 import CustomActions from './CustomActions';
 
