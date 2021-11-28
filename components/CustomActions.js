@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 
 export default class CustomActions extends React.Component {
@@ -24,6 +25,15 @@ export default class CustomActions extends React.Component {
         }
       },
     );
+  }
+
+  pickImage = async () => {
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if(permissionResult.granted === true) {
+      let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' });
+      if (result.cancelled === false) {
+      }
+    }
   }
 
   render() {
