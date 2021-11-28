@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
+import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import firebase from 'firebase';
 import firestore from 'firebase';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
-// import CustomActions from './CustomActions';
+import CustomActions from './CustomActions';
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -135,7 +136,7 @@ export default class Chat extends React.Component {
   }
 
   renderInputToolbar(props) { // Input bar for messages only rendered if the user is online
-    if(this.state.isConnected == false) {
+    if(this.state.isConnected === false) {
     } else {
       return (
         <InputToolbar {...props}/>
@@ -143,9 +144,28 @@ export default class Chat extends React.Component {
     }
   }
 
-  /* renderCustomActions = (props) => { // Returns action button to access communication features
+  renderCustomActions = (props) => { // Returns action button to access communication features
     return <CustomActions {...props} />;
-  }; */
+  }
+
+  renderCustomView(props) { // Returns a mapview in the message bubble if a location has been added to the current message
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+  //        showsUserLocation={true}
+          style={{width: 150, height: 100, borderRadius: 13, margin: 3}}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      )
+    }
+    return null
+  }  
 
   componentWillUnmount() {
     this.authUnsubscribe();
@@ -163,7 +183,8 @@ export default class Chat extends React.Component {
           renderBubble={this.renderBubble}
           renderInputToolbar={this.renderInputToolbar.bind(this)} // Function needs to be bound to Chat component in order to read the isConnected state 
           renderUsernameOnMessage={true}
-        //  renderActions={this.renderCustomActions}
+          renderActions={this.renderCustomActions}
+          renderCustomView={this.renderCustomView}
           user={{ 
             _id: this.state.uid, 
             name: this.state.name,
