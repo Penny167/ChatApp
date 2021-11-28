@@ -4,11 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import firebase from 'firebase';
 import firestore from 'firebase';
-//const firebase = require('firebase');
-//require('firebase/firestore');
-//require('firebase/auth');
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
-import CustomActions from './CustomActions';
+// import CustomActions from './CustomActions';
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -108,7 +105,7 @@ export default class Chat extends React.Component {
     }
   }
 
-  async deleteMessages () { // This has just been added in case needed to clear out asyncStorage periodically during development and testing
+  async deleteMessages () { // This has been added in case needed to clear out asyncStorage periodically during development and testing
     try {
       await AsyncStorage.removeItem('messages');
     } catch (error) {
@@ -146,9 +143,9 @@ export default class Chat extends React.Component {
     }
   }
 
-  renderCustomActions = (props) => { // Returns action button to access communication features
+  /* renderCustomActions = (props) => { // Returns action button to access communication features
     return <CustomActions {...props} />;
-  };
+  }; */
 
   componentWillUnmount() {
     this.authUnsubscribe();
@@ -164,9 +161,9 @@ export default class Chat extends React.Component {
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
           renderBubble={this.renderBubble}
-          renderInputToolbar={this.renderInputToolbar}
+          renderInputToolbar={this.renderInputToolbar.bind(this)} // Function needs to be bound to Chat component in order to read the isConnected state 
           renderUsernameOnMessage={true}
-          renderActions={this.renderCustomActions}
+        //  renderActions={this.renderCustomActions}
           user={{ 
             _id: this.state.uid, 
             name: this.state.name,
