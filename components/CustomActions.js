@@ -28,11 +28,17 @@ export default class CustomActions extends React.Component {
   }
 
   pickImage = async () => {
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if(permissionResult.granted === true) {
-      let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' });
-      if (result.cancelled === false) {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if(permissionResult.granted === true) {
+        const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' });
+        if (result.cancelled === false) {
+          const imageUrl = await this.getImageUrl(result.uri);
+          this.props.onSend({ image: imageUrl });
+        }
       }
+    } catch (error) {
+      console.log(error.message);
     }
   }
 
