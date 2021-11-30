@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import firebase from 'firebase';
 
 
 export default class CustomActions extends React.Component {
@@ -33,12 +34,26 @@ export default class CustomActions extends React.Component {
       if(permissionResult.granted === true) {
         const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' });
         if (result.cancelled === false) {
-          const imageUrl = await this.getImageUrl(result.uri);
-          this.props.onSend({ image: imageUrl });
+          const imageUrl = await this.getImageUrl(result.uri); // Obtains the Url of the image from Firebase storage
+          this.props.onSend({ image: imageUrl }); // Passes the Url to the current message to populate the image property onSend via props
         }
       }
     } catch (error) {
       console.log(error.message);
+    }
+  }
+
+  getImageUrl = async (uri) => {
+    try {
+      const response = await fetch(uri); // Fetch the image from the local uri 
+      const blob = await response.blob(); // Convert to blob
+      const splitUri = uri.split("/"); // Split the uri in to array of parts
+      const imageName = splitUri[splitUri.length-1]; // Select URL part
+      const ref = firebase.storage().ref().child(`images/${imageName}`); // Create reference to where image will be stored in Firebase storage
+      const storeBlob = await ref.put(blob); // Put blob in to storage
+      return await storeBlob.ref.getDownloadURL(); // Retrieve URL of stored blob to attach to message when sent
+    } catch (error) {
+    console.log(error.message);
     }
   }
 
