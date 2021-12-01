@@ -81,7 +81,8 @@ export default class Chat extends React.Component {
           name: data.user.name,
           avatar: data.user.avatar
         },
-        image: data.image
+        image: data.image,
+        location: data.location
       });
     });
     this.setState({ messages: messages }, () => { // setState is asynchronous so use callback parameter to invoke saveMessages only once the messages state has been updated
@@ -127,7 +128,8 @@ export default class Chat extends React.Component {
       text: latestMessage.text,
       createdAt: latestMessage.createdAt,
       user: latestMessage.user,
-      image: latestMessage.image || ''
+      image: latestMessage.image || '',
+      location: latestMessage.location || null
     });
   }
 
