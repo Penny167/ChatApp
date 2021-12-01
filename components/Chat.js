@@ -4,7 +4,6 @@ import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import firebase from 'firebase';
-import firestore from 'firebase';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 import CustomActions from './CustomActions';
 

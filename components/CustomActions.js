@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as Location from 'expo-location';
+import * as ImagePicker from 'expo-image-picker'; // Needed for selecting images and using camera
+import * as Location from 'expo-location'; // Needed for obtaining users geolocation
 import firebase from 'firebase';
 
 
 export default class CustomActions extends React.Component {
 
-  onActionPress = () => {
-    const options = ['Choose Image', 'Take Picture', 'Send Location', 'Cancel'];
-    const cancelButtonIndex = options.length - 1;
+  onActionPress = () => { // Function to bring up action sheet with communication features options
+    const options = ['Choose Image', 'Send Photo', 'Send Location', 'Cancel']; // Configures options
+    const cancelButtonIndex = options.length - 1; // Identifes index of the cancel option
     this.context.actionSheet().showActionSheetWithOptions({ options, cancelButtonIndex },
       async (buttonIndex) => {
         switch (buttonIndex) {
@@ -31,12 +31,12 @@ export default class CustomActions extends React.Component {
 
   pickImage = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync(); // Requests users permission to access media library
       if(permissionResult.granted === true) {
-        const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' });
+        const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'Images' }); // Allows user to select image
         if (result.cancelled === false) {
           const imageUrl = await this.getImageUrl(result.uri); // Obtains the Url of the image from Firebase storage
-          this.props.onSend({ image: imageUrl }); // Passes the Url to the current message to populate the image property onSend via props
+          this.props.onSend({ image: imageUrl }); // Passes the Url to the current message to populate the image property onSend via props. Once sent, image is visible inside message bubble
         }
       }
     } catch (error) {
@@ -48,11 +48,11 @@ export default class CustomActions extends React.Component {
     try {
       const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
       const imagePermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if(cameraPermission.granted && imagePermission.granted === true) {
-        const result = await ImagePicker.launchCameraAsync();
+      if(cameraPermission.granted && imagePermission.granted === true) { // Both media library access permission and camera access permission needed
+        const result = await ImagePicker.launchCameraAsync(); // Allows user to take photo and returns object with image uri. Rest of code works the same as for an image selected from the gallery
         if (result.cancelled === false) {
           const imageUrl = await this.getImageUrl(result.uri);
-          this.props.onSend({ image: imageUrl });
+          this.props.onSend({ image: imageUrl }); 
         }
       }
     } catch (error) {
@@ -62,13 +62,13 @@ export default class CustomActions extends React.Component {
 
   getLocation = async () => {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync(); // Requests permission to retrieve user location
       if(status === 'granted') {
-        const result = await Location.getCurrentPositionAsync({});
+        const result = await Location.getCurrentPositionAsync({}); // Returns user position
         const longitude = JSON.stringify(result.coords.longitude);
         const latitude = JSON.stringify(result.coords.latitude);
         if (result) {
-          this.props.onSend({ location: { longitude: longitude, latitude: latitude } });
+          this.props.onSend({ location: { longitude: longitude, latitude: latitude } }); // Updates the current message with the user location onSend via props. Once sent, location is displayed on a map inside the message bubble
         }
       }
     } catch (error) {
@@ -90,7 +90,7 @@ export default class CustomActions extends React.Component {
     }
   }
 
-  render() {
+  render() { // Renders button that when pressed activates the action sheet, presenting the user with list of action to select from
     return (
       <TouchableOpacity style={styles.container} onPress={this.onActionPress}>
        <View style={[styles.wrapper, this.props.wrapperStyle]}>
@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
   }
 });
 
-CustomActions.contextTypes = { //assigns the context object actionSheet and checks that this is a function
+CustomActions.contextTypes = { // Assigns the context object actionSheet and checks that this is a function
   actionSheet: PropTypes.func,
 };
