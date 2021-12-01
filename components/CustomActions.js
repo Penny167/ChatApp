@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 import firebase from 'firebase';
 
 
@@ -52,6 +53,22 @@ export default class CustomActions extends React.Component {
         if (result.cancelled === false) {
           const imageUrl = await this.getImageUrl(result.uri);
           this.props.onSend({ image: imageUrl });
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  getLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if(status === 'granted') {
+        const result = await Location.getCurrentPositionAsync({});
+        const longitude = JSON.stringify(result.coords.longitude);
+        const latitude = JSON.stringify(result.coords.latitude);
+        if (result) {
+          this.props.onSend({ location: { longitude: longitude, latitude: latitude } });
         }
       }
     } catch (error) {
