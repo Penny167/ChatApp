@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView from 'react-native-maps'; // Used to render location within a map
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo'; // Used to establish users connection status
 import firebase from 'firebase';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat'; // Bubble component needed to customize the message bubbles
 import CustomActions from './CustomActions';
@@ -24,7 +24,7 @@ export default class Chat extends React.Component {
       isConnected: false,
     };
     if (!firebase.apps.length) {
-      firebase.initializeApp({ // Initialise the app by passing the config object provided by Firebase to the initialize app function
+      firebase.initializeApp({ // Initialize the app by passing the config object provided by Firebase to the initialize app function
         apiKey: "AIzaSyAUUEaqS1CoGE0hriIAGgC_i7MC5dQWDt0",
         authDomain: "chatapp-fccd8.firebaseapp.com",
         projectId: "chatapp-fccd8",
@@ -43,12 +43,12 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
-    this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen
+    this.props.navigation.setOptions({ title: this.state.name }); // Setting the header text shown on the screen to be the user name entered on the start screen
     NetInfo.fetch().then(connection => {
-      if(connection.isConnected) {
+      if(connection.isConnected) { // If the user is connected proceed to firebase authentication
         this.setState({ isConnected: true, loggedInText: 'Online' });
-        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-          if (!user) { await firebase.auth().signInAnonymously() };
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => { // Add a database listener to detect changes in authorization status. Store callback to detach listener in authUnsubscribe property
+          if (!user) { await firebase.auth().signInAnonymously() }; // 
           this.setState({
             uid: user.uid,
             user: {
@@ -57,17 +57,17 @@ export default class Chat extends React.Component {
               avatar: 'https://placeimg.com/140/140/any'
             }
           });
-          // Add a database listener that will retrieve a snapshot of the messages collection whenever a change is detected, and pass it to the onCollectionUpdate function
+          // Add a database listener that will retrieve a snapshot of the messages collection whenever a change is detected, and pass it to the onCollectionUpdate function. Store callback to unsubscribe in unsubscribeMessagesCollection object
           this.unsubscribeMessagesCollection = this.messagesCollection.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
         });
       } else {
         this.setState({ isConnected: false });
-        this.getMessages();
+        this.getMessages(); // If the user is offline get messages from async storage
       }
     });
   }
 
-  onCollectionUpdate = (querySnapshot) => { // when the database is updated set the messages state with the current data from the snapshot
+  onCollectionUpdate = (querySnapshot) => { // When the database is updated, set the messages state with the updated data received in the snapshot
     const messages = [];
     querySnapshot.forEach((doc) => {
       let data = doc.data();
@@ -85,7 +85,7 @@ export default class Chat extends React.Component {
       });
     });
     this.setState({ messages: messages }, () => { // setState is asynchronous so use callback parameter to invoke saveMessages only once the messages state has been updated
-      this.saveMessages();
+      this.saveMessages(); // Each time the messages state is updated, save the new version to async storage
     });
   }
 
@@ -116,13 +116,12 @@ export default class Chat extends React.Component {
   }
 
   onSend(newMessage = []) { // onSend triggers the add message function to update the database. The database listener then triggers a state update using onCollectionUpdate when the new message is detected
-  //  console.log(newMessage);
     this.addMessage(newMessage)
   }
 
   addMessage(newMessage) {
     const latestMessage = newMessage[0]; // A new message in Gifted Chat is an array containing a new message object. We therefore need to first extract the object from the array
-    this.messagesCollection.add({ // Use add method to add new message to the messages collection
+    this.messagesCollection.add({ // Use add method to add new message to the messages collection in the firestore database
       _id: latestMessage._id,
       text: latestMessage.text,
       createdAt: latestMessage.createdAt,
@@ -132,13 +131,13 @@ export default class Chat extends React.Component {
     });
   }
 
-  renderBubble(props) { // Customizes the bubble styling
+  renderBubble(props) { // Customize the bubble styling
     return (
       <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#8aa59a'} }}/>
     )
   }
 
-  renderInputToolbar(props) { // Input bar for messages only rendered if the user is online
+  renderInputToolbar(props) { // Input bar for messages is only rendered if the user is online
     if(this.state.isConnected === false) {
     } else {
       return (
@@ -147,8 +146,8 @@ export default class Chat extends React.Component {
     }
   }
 
-  renderCustomActions = (props) => { // Returns action button to access communication features
-    return <CustomActions {...props} />;
+  renderCustomActions = (props) => { // Returns action button to access communication features via an action sheet
+    return <CustomActions {...props} />; // Spread operator used to assign copy of props to the component, to which image or location may be added via actions
   }
 
   renderCustomView(props) { // Returns a mapview in the message bubble if a location has been added to the current message
@@ -171,8 +170,8 @@ export default class Chat extends React.Component {
   }  
 
   componentWillUnmount() {
-    this.authUnsubscribe();
-    this.unsubscribeMessagesCollection();
+    this.authUnsubscribe(); // Remove authorization listener
+    this.unsubscribeMessagesCollection(); // Remove database messages collection listener
  }
   
   render() {
