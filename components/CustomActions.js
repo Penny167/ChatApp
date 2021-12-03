@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
   }
 });
 
-CustomActions.contextTypes = { // Assigns the context object actionSheet and checks that this is a function
+CustomActions.contextTypes = { // Assigns the context object actionSheet and checks that it is a function
   actionSheet: PropTypes.func,
 };
