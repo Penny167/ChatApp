@@ -1,14 +1,14 @@
 # ChatApp
 
-ChatApp is a mobile chat app built using React Native, Expo, Gifted Chat and Google Firebase, that allows users to participate in a group chat where they can read and send messages, share images and share their location.
+ChatApp is a mobile chat app built using React Native, Expo, Gifted Chat and Google Firebase that allows users to participate in a group chat. They can read and send messages, share images and share their location.
 
 ---
 
 ## Walkthrough of ChatApp features
 
-- On opening the app the user is first presented with a start screen where they can enter their name and select the background colour for the chat screen. On pressing "Start Chatting" they are taken to the chat screen where their name and the selected background colour will be displayed.
+- On opening the app the user is presented with a start screen where they can enter their name and select the background colour for the chat screen. On pressing "Start Chatting" they are taken to the chat screen where their name and the selected background colour will be displayed.
 
-- If connected to the internet, the user will see all the messages in the chat with the most recent displayed first. There is an input bar on the screen where the user can compose and then send a message. The bar also contains an action button that when pressed brings up additional options. The user can select and send an image, take and send a picture using their phone camera, or send their physical location, which will be displayed on a map inside their message.
+- If connected to the internet, the user will see all messages in the chat with the most recent displayed first. There is an input bar on the screen where the user can compose and then send a message. The bar also contains an action button that when pressed brings up additional options. The user can select and send an image, take and send a picture using their phone camera, or send their physical location, which will be displayed on a map inside their message.
 
 - When users are online, all of the existing messages in the conversation plus any new messages sent during their session are stored on their device using Async storage. This means that if the user subsequently opens the app when they have no internet connection, they will still see all of the chat messages displayed. Users cannot SEND messages when offline and so the input bar is disabled when the user status is offline and will not be visible (note that this functionality means that if a user opens the app for the very first time when they have no internet connection, then they will simply see a screen in the selected background colour and with their name at the top but with no messages and no input bar).
 
@@ -20,7 +20,7 @@ Expo provides additional tools and services that support React Native developmen
 
 Gifted Chat is a React Native library created specifically for developing chat apps. It provides the entire interface, from the text input bar to the speech bubbles and "send" button; the code therefore focuses on the functionality to feed the app messages, user authentication and message storage.
 
-Firebase is a Backend-as-a-Service platform that provides database and cloud storage tools. In this case we need a database to store the chat messages and storage for saving image files, so Firebase's Firestore database and Firebase's Storage are used respectively. Firebase has a variety of available methods for authenticating users and in this project we use Anonymous authentication for simplicity.
+Firebase is a Backend-as-a-Service platform that provides database and cloud storage tools. For this project we need a database to store the chat messages and storage for saving image files, so Firebase's Firestore database and Storage are used respectively. Firebase has a variety of available methods for authenticating users and in this project we use Anonymous authentication for simplicity.
 
 ---
 
@@ -33,7 +33,7 @@ Firebase is a Backend-as-a-Service platform that provides database and cloud sto
 5. You will need to create a project in Firebase in order to set up the database for the messages and storage for images. Log in to Firebase using Google credentials, go to the console and click on either Create Project or Add Project, name the project and click create. From the project dashboard select Firestore database and follow the steps (in this simple example we start in test mode so we don't need to worry about configuring database access rules to begin with). Add a collection for messages.
 6. Next go to Project Settings and click on the </> icon to register the app. Follow the registration steps. You will then be provided with the code to configure the app and connect it to the project. Use this code to replace the current config object inside the initializeApp function on lines 28-33 of Chat.js (refer to the walkthrough of the Chat component below for more details). 
 7. Finally, from the project dashboard select Authentication. Click on anonymous and move the slider to "enabled".
-7. You can now start the project by running: npm start or expo start (both work)
+8. You can now start the project by running: npm start or expo start (both work)
 
 A new tab will open showing the Metro Bundler, which is an http server that transpiles the app's JavaScript using Babel then serves it to the expo app. Options on the left hand side of the screen will allow you to run the project in an emulator or simulator, or on your phone using the QR code that will be displayed. These options will also appear in your terminal. 
 
@@ -45,7 +45,7 @@ To run the project on your phone you must first download expo from the app store
 
 - The App.js component is where we determine how we will move between the 2 main screens - specifically the start screen and the chat screen. To code this we use the React Navigation package and its related npm and expo dependencies (a full list of dependencies is contained in the package.json file). 
 
-- This app uses stack navigation so we first create a stack then render it inside our return statement wrapped in a navigation container. We then configure the stack with the initial route, then the list of screens with their names and the names of their components. The components are imported at the head of the file. In this case we specify that the default first screen to be shown is the start screen rendered by the Start.js component.
+- This app uses stack navigation so we first create a stack then render it inside our return statement wrapped in a navigation container. We then configure the stack with the initial route, then the list of screens with their names and the names of their components. The components are imported at the head of the file. In this case we specify that the default screen to be shown is the start screen.
 
 - The start screen renders an input bar where the user can enter their name, buttons from which the user can select the background colour from a choice of 4 options, and a "Start Chatting" button that will take them to the chat screen. The layout has been created and styled using React Native components, including the keyboard avoiding view, which prevents the input bar being obscured by the phone's keyboard on Android devices. The input bar and buttons have been made accessible to make the app suitable for all users.
 
@@ -75,7 +75,7 @@ To run the project on your phone you must first download expo from the app store
 
 ---
 
-##A note on Firebase
+## A note on Firebase
 
 This project uses Firebase version 8.2.3. Firebase version 9 works with modules whereby only functions needed are imported rather than the whole library, thereby improving performance. All of the functionality in the project can be achieved using version 9 however the syntax used here will need to be adapted in order for the project to run.
 
