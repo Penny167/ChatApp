@@ -9,7 +9,7 @@ import firebase from 'firebase';
 export default class CustomActions extends React.Component {
 
   onActionPress = () => { // Function to bring up action sheet with communication features options
-    const options = ['Choose Image', 'Send Photo', 'Send Location', 'Cancel']; // Configures options
+    const options = ['Select Image', 'Send Photo', 'Share Location', 'Cancel']; // Configures options
     const cancelButtonIndex = options.length - 1; // Identifes index of the cancel option
     this.context.actionSheet().showActionSheetWithOptions({ options, cancelButtonIndex },
       async (buttonIndex) => {
@@ -92,7 +92,8 @@ export default class CustomActions extends React.Component {
 
   render() { // Renders button that when pressed activates the action sheet, presenting the user with list of action to select from
     return (
-      <TouchableOpacity style={styles.container} onPress={this.onActionPress}>
+      <TouchableOpacity style={styles.container} accessible={true} accessibilityLabel="More options" accessibilityHint="Launches menu with image, camera and location options" accessibilityRole="button"
+        onPress={this.onActionPress}>
        <View style={[styles.wrapper, this.props.wrapperStyle]}>
          <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
        </View>
