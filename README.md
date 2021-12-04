@@ -1,10 +1,10 @@
-#ChatApp
+# ChatApp
 
 ChatApp is a mobile chat app built using React Native, Expo, Gifted Chat and Google Firebase, that allows users to participate in a group chat where they can read and send messages, share images and share their location.
 
 ---
 
-##Walkthrough of ChatApp features
+## Walkthrough of ChatApp features
 
 - On opening the app the user is first presented with a start screen where they can enter their name and select the background colour for the chat screen. On pressing "Start Chatting" they are taken to the chat screen where their name and the selected background colour will be displayed.
 
@@ -12,7 +12,7 @@ ChatApp is a mobile chat app built using React Native, Expo, Gifted Chat and Goo
 
 - When users are online, all of the existing messages in the conversation plus any new messages sent during their session are stored on their device using Async storage. This means that if the user subsequently opens the app when they have no internet connection, they will still see all of the chat messages displayed. Users cannot SEND messages when offline and so the input bar is disabled when the user status is offline and will not be visible (note that this functionality means that if a user opens the app for the very first time when they have no internet connection, then they will simply see a screen in the selected background colour and with their name at the top but with no messages and no input bar).
 
-##Overview of technologies used
+## Overview of technologies used
 
 React Native has been used to develop this app because it is cross-platform, meaning the app will work on both iOS and Android whilst requiring only one codebase to be maintained.
 
@@ -24,7 +24,7 @@ Firebase is a Backend-as-a-Service platform that provides database and cloud sto
 
 ---
 
-##How to set up and run the project
+## How to set up and run the project
 
 1. To create and run expo projects you must first install the expo cli using node: npm install expo-cli--global
 2. Create a project directory in your chosen location by running: expo init *project-name*
@@ -41,7 +41,7 @@ To run the project on your phone you must first download expo from the app store
 
 ---
 
-##Walkthrough of key components
+## Walkthrough of key components
 
 - The App.js component is where we determine how we will move between the 2 main screens - specifically the start screen and the chat screen. To code this we use the React Navigation package and its related npm and expo dependencies (a full list of dependencies is contained in the package.json file). 
 
