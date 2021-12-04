@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Platform, KeyboardAvoidingView, LogBox } from 'react-native';
+import { View, Text, Platform, KeyboardAvoidingView, LogBox, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps'; // Used to render location within a map
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo'; // Used to establish users connection status
@@ -115,7 +115,7 @@ export default class Chat extends React.Component {
     const latestMessage = newMessage[0]; // A new message in Gifted Chat is an array containing a new message object. We therefore need to first extract the object from the array
     this.messagesCollection.add({ // Use add method to add new message to the messages collection in the firestore database
       _id: latestMessage._id,
-      text: latestMessage.text,
+      text: latestMessage.text || '',
       createdAt: latestMessage.createdAt,
       user: latestMessage.user,
       image: latestMessage.image || '',
@@ -125,7 +125,7 @@ export default class Chat extends React.Component {
 
   renderBubble(props) { // Customize the bubble styling
     return (
-      <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#8aa59a'} }}/>
+      <Bubble {...props} wrapperStyle={{ right: {backgroundColor: '#ED7BE6'} }}/>
     )
   }
 
@@ -147,7 +147,7 @@ export default class Chat extends React.Component {
     if (currentMessage.location) {
       return (
         <MapView
-  //        showsUserLocation={true}
+          showsUserLocation={true}
           style={{width: 150, height: 100, borderRadius: 13, margin: 3}}
           region={{
             latitude: currentMessage.location.latitude,
@@ -170,7 +170,7 @@ export default class Chat extends React.Component {
 
     return (
       <View style={{flex: 1, backgroundColor: this.state.colour}}>
-        <Text>{this.state.loggedInText}</Text>
+        <Text style={styles.loggedInText}>{this.state.loggedInText}</Text>
         <GiftedChat 
           messages={this.state.messages} 
           onSend={newMessage => this.onSend(newMessage)}
@@ -190,3 +190,9 @@ export default class Chat extends React.Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  loggedInText: {
+    color: 'white'
+  }
+})

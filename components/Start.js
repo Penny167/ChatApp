@@ -26,8 +26,8 @@ export default class Start extends React.Component {
             <TouchableOpacity style={[styles.color1, {backgroundColor: "#8A95A5",}]} accessible={true} accessibilityLabel="Select grey-blue" accessibilityHint="Sets chat screen background to grey-blue" accessibilityRole="button"
               onPress={() => this.setState({ colour: '#8A95A5'})}>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.color1, {backgroundColor: "#B9C6AE",}]} accessible={true} accessibilityLabel="Select light green" accessibilityHint="Sets chat screen background to light green" accessibilityRole="button"
-              onPress={() => this.setState({ colour: '#B9C6AE'})}>
+            <TouchableOpacity style={[styles.color1, {backgroundColor: "#5F79A3",}]} accessible={true} accessibilityLabel="Select light green" accessibilityHint="Sets chat screen background to light green" accessibilityRole="button"
+              onPress={() => this.setState({ colour: '#5F79A3'})}>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.button} accessible={true} accessibilityLabel="Start chatting" accessibilityHint="Navigates to chat screen" accessibilityRole="button"
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   button: { // I am calling the class name button but note that a TouchableOpacity component has been used instead of a button to apply the styles specified in the brief
-    backgroundColor: '#B9C6AE',
+    backgroundColor: '#8A95A5',
     height: "25%",
     justifyContent: "center",
     alignItems: "center",
@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#474056",
+    color: "white",
   }
 })
