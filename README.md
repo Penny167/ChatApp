@@ -30,6 +30,7 @@ To create and run Expo projects you must firstly install the expo cli:
 ```
 npm install expo-cli--global
 ```
+You will also need an Expo account. Head to the [signup](https://expo.dev/) page and follow the instructions.
 Next create a project directory in your chosen location by running: 
 ```
 expo init *your-project-name*
@@ -52,7 +53,7 @@ npm start or expo start
 ```
 A new tab will open showing the Metro Bundler, which is an http server that transpiles the JavaScript files using Babel then serves them to the Expo app. Options on the left hand side of the screen will allow you to run the project in the browser, on an emulator or simulator, or on your phone using the QR code that will be displayed. These options will also appear in your terminal. 
 
-To run the project on your phone you must first download Expo from the App Store before scanning the QR code provided. To run the project from an emulator, you must first configure a device using Android Studio. A simulator can alternatively be set up using Xcode.
+To run the project on your phone you must first download the Expo app from the relevant app store for your device before scanning the QR code provided. To run the project from an emulator, you must first configure a device using [Android Studio](https://developer.android.com/studio). An iOS simulator can alternatively be set up on a Mac using [Xcode](https://apps.apple.com/app/xcode).
 
 ## A note on Firebase
 
