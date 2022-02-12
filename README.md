@@ -1,6 +1,6 @@
 # ChatApp
 
-<img src="ChatApp.png" width="100">
+<img align="center" src="ChatApp.png" width="250">
 
 ChatApp is a cross-platform mobile application built using React Native, Expo, Gifted Chat and Google Firebase that allows users to participate in a group chat. They can read and send messages, share images and share their location. The app uses Async Storage to allow users to view messages even when they are offline.
 
